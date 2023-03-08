@@ -1,4 +1,6 @@
 import RPi.GPIO as g
+import rclpy as ros
+from rclpy.node import Node
 
 class Drivetrain():
     def __init__(self,ena,enb,in1,in2,in3,in4):
@@ -50,10 +52,22 @@ class Drivetrain():
             g.output(self.in3,g.LOW)
             g.output(self.in4,g.LOW)
 
+
+class ControllerNode(Node):
+    def __init__(self):
+        super().__init__("controller_node")
+        self.get_logger().info("You ran the controller.py")
+        self.get_logger().info("Creating Drivetrain...")
+        drivetrain = Drivetrain(11,12,13,15,16,18)
+        drivetrain.changedirection(1,1)
+        drivetrain.changedirection(2,1)
+
+
 def main(args=None):
-    drivetrain = Drivetrain(11,12,13,15,16,18)
-    drivetrain.changedirection(1,1)
-    drivetrain.changedirection(2,1)        
+    ros.init(args=args)
+    node = ControllerNode()
+
+    ros.shutdown()   
 
 if __name__ == '__main__':
     main()
